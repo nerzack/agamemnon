@@ -1,0 +1,158 @@
+<!doctype html>
+<head>
+	<title>Αγαμέμνων</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		a {color:white;}
+		#poiesglosses { position:absolute; top:450px; left:160px;
+			color:black; font-family:"Arial Black"; font-size:30px;visibility:hidden;}
+		#spanlexi {position:absolute;top:15px;left:15px;
+			width:700px; height:150px; 
+			background-color:orange; font-size:90px; color:blue;
+			font-family:"Arial Black";text-align:center;visibility:hidden;
+			 }
+			 #plhrof {position:absolute; border-style:solid; border-color:black;color:white;
+				 top:150px;left:190px;z-index:2;font-family:"Arial Black";font-size:25pt;
+	border-width:2px; margin:auto; text-align:center;visibility:hidden; }
+	#epomeni{font-family:"Arial Black";font-size:25pt;}
+			 .koumpiapant {position:absolute;width:300px;height:100px;
+				 background-color:lightgray;font-size:40px;color:blue;
+				 font-family:"Arial Black";align-items:center;visibility:visible;}
+		#glossoepiloges {position:absolute; top:100px; left:250px;
+			font-family:"Arial Black"; font-size:30px;visibility:hidden;}
+			#epistrofi {position:absolute;top:500px; left:170px;background-color:blue;color:white;
+				font-family:"Arial Black"; font-size:20px;visibility:hidden;}
+		.koumpiglos {position:absolute; font-family:"Times New Roman";font-size:20px;
+			background-color:cyan;}
+		#koumpinext {position:absolute; top:350px; left:220px;
+			font-family:"Arial Black";font-size:30px;
+			background-color:gold;visibility:hidden;}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script>	
+			function shuffle(array) {
+				// http://stackoverflow.com/questions/962802#962890
+  var tmp, current, top = array.length;
+  if(top) while(--top) {
+    current = Math.floor(Math.random() * (top + 1));
+    tmp = array[current];
+    array[current] = array[top];
+    array[top] = tmp;
+  }
+  return array;
+}
+function krypseplhrof() {
+	document.getElementById("plhrof").style.visibility="hidden";
+}
+			function krypsearxiki() {
+				$( ".koumpiglos" ).remove();
+				document.getElementById("koumpinext").style.visibility="hidden";
+				document.getElementById("glossoepiloges").style.visibility="hidden";
+}
+
+function tsekare(a){
+	        $("input[type=button]").attr("disabled", "disabled");
+	if (a.value===swsth) {
+		document.getElementById("plhrof").style.backgroundColor="green";
+		document.getElementById("plhrof").innerHTML="Σωστά!<br>"+
+		leksh+"="+swsth+"<br>"+
+		"<a href='https://translate.google.com/#"+gls1+"/"+gls2+"/"+leksh+
+		"' target='_blank'>Google Translate</a><br>"+
+			"<input type='button' id='epomeni' value='Επόμενη' onclick='krypseplhrof();deikseleksi();'>";
+		document.getElementById("plhrof").style.visibility="visible";
+	} else {
+		document.getElementById("plhrof").style.backgroundColor="red";
+		document.getElementById("plhrof").innerHTML="Λάθος!<br>"+
+		leksh+"="+swsth+"<br>"+
+		"<a href='https://translate.google.com/#"+gls1+"/"+gls2+"/"+leksh+
+		"' target='_blank'>Google Translate</a><br>"+
+			"<input type='button' id='epomeni' value='Επόμενη' onclick='krypseplhrof();deikseleksi();'>";
+		document.getElementById("plhrof").style.visibility="visible";
+	}
+}
+			function deikseleksi() {
+$( ".koumpiapant" ).remove();
+				document.getElementById("spanlexi").style.visibility="visible";
+				document.getElementById("poiesglosses").style.visibility="visible";
+			    document.getElementById("epistrofi").style.visibility="visible";
+			    document.getElementById("epistrofi").disabled=false;
+			    document.getElementById("poiesglosses").innerHTML="<img src='perik.png' width='40px' height='40px' align='left'>"
+								+glossa1+"<img src='arrow.jpg' width='30px' height='30px'>"+glossa2;
+				var apantiseis=[]; var allestimes=[];var timi="";
+				$.getJSON( "https://api.myjson.com/bins/f12et", function( data ) {
+					for (var i=0; i<data.length; i++) {
+							allestimes[i]=data[i][glossa2];
+						}
+					  var N=Math.floor(Math.random()*(data.length));
+					leksh=document.getElementById("spanlexi").innerHTML=data[N][glossa1];
+					swsth=apantiseis[0]=data[N][glossa2];
+					allestimes.splice(N,1);
+					allestimes=shuffle(allestimes);
+					for (i=1;i<4;i++) {
+						apantiseis[i]=allestimes[i];
+					}
+					apantiseis=shuffle(apantiseis);
+					for (i=0;i<2;i++) {
+						for (var j=0;j<2;j++) {
+							idnum=i*2+j;
+							idstring="koumpi"+idnum.toString();
+							timi=apantiseis[idnum];console.log(timi,swsth);
+					$(document.body).append("<input type='button' class='koumpiapant' id="+idstring+" value="+
+							timi+" onclick='tsekare(this)';>");
+					document.getElementById(idstring).style.top=i*100+200+"px";
+					document.getElementById(idstring).style.left=j*300+60+"px";
+				}
+			}
+		 });
+		}
+		function paretimes(x) {
+			if (glossa1==-1) {
+				glossa1=x.value; gls1=glsyntom[glosses.indexOf(glossa1)];
+				x.disabled=true;
+				document.getElementById("glossoepiloges").innerHTML+="<br>"+glossa1+
+				"<br>Διάλεξε 2η γλώσσα:<br>";
+			} else {
+			if (glossa2==-1) {
+				glossa2=x.value;gls2=glsyntom[glosses.indexOf(glossa2)];
+				x.disabled=true;
+				document.getElementById("glossoepiloges").innerHTML+=glossa2;
+				document.getElementById("koumpinext").style.visibility="visible";
+			}
+			} 
+		}
+			function arxikiselida() {
+				glossa1=glossa2=-1;
+				document.getElementById("spanlexi").style.visibility="hidden";
+				document.getElementById("poiesglosses").style.visibility="hidden";
+				document.getElementById("epistrofi").style.visibility="hidden";
+				$( ".koumpiapant" ).remove();
+				$(document.body).append("<div id='glossoepiloges'></div>");
+				document.getElementById("glossoepiloges").style.visibility="visible";
+				document.getElementById("glossoepiloges").innerHTML="Διάλεξε 1η γλώσσα:";
+				var thesitop=50;
+				for (var i=0;i<glosses.length;i++) {
+					var kgstring="koumpiglossas"+i.toString();
+					$(document.body).append("<input type='button' class='koumpiglos' id="+kgstring+" value="+glosses[i]+" onclick='paretimes(this);'>");
+					thesitop+=50;
+					document.getElementById(kgstring).style.top=thesitop.toString()+"px";
+					document.getElementById(kgstring).style.left="20px";
+				}
+				$(document.body).append("<input type='button' id='koumpinext' value='Ξεκινάμε;' onclick='krypsearxiki();deikseleksi();'>");
+				document.getElementById("koumpinext").disabled=false;
+				$(document.body).append("</div>");
+			}	
+		</script>
+	</head>
+<body>
+	<script>
+		leksh=swsth="";glossa1=glossa2=-1;gls1=gls2=-1;
+		glosses=["Αγγλικά","Ελληνικά","Ισπανικά","Γερμανικά","Ρωσικά"];
+		glsyntom=["en","el","es","de","ru"];
+		$(document.body).append("<span id='spanlexi'>");
+		$(document.body).append("<div id='poiesglosses'>");
+		$(document.body).append("<input type='button' id='epistrofi' value='Επιστροφή στο κεντρικό μενού' onclick='arxikiselida()';>")
+		arxikiselida();
+	</script>
+	<div id="plhrof"></div>
+	</body>
+	</html>
